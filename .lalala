@@ -1,0 +1,343 @@
+# Prerequisites#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define MAXN 100                 //预定义把代码里出现的MAXN用100代替
+
+void menu()
+{
+    printf("\t\t*************学生成绩管理系统**********\n");
+    printf("\t\t|   (:o三三  Welcome~                 |\n");
+    printf("\t\t|              1)添加记录         ☆  |\n");
+    printf("\t\t|        ☆    2)显示记录             |\n");
+    printf("\t\t|              3)修改记录             |\n");
+    printf("\t\t|     ☆       4)删除记录             |\n");
+    printf("\t\t|              5)查找学号     ☆      |\n");
+    printf("\t\t|              6)学号排序        ☆   |\n");
+    printf("\t\t|              7)文件加载             |\n");
+    printf("\t\t|  ☆          8)文件保存             |\n");
+    printf("\t\t|              0)退出系统             |\n");
+    printf("\t\t|          ☆              ~~ 三三o:) |\n");
+    printf("\t\t***************************************\n");
+}
+
+typedef struct            //结构体：基本数据类型或结构体的组合
+{
+    char number[10];
+    char name[10];
+    int China;
+    int Math;
+} Student;
+
+Student stu[MAXN];      //结构体数组：元素结构体的数组，类似于int a[MAXN]
+int n=0;                  //系统中学生的总数
+
+void add()
+{
+    printf("请输入需要添加的学生学号：\n");
+    while(1)
+    {
+        while(2)
+        {
+            printf("学号:");
+            scanf("%s",stu[n].number);
+            int same=0;                  //是否找到相同学号
+            for(int i=0; i<n; i++)
+            {
+                if(strcmp(stu[i].number,stu[n].number)==0)    //字符比较
+                {
+                    same=1;
+                    break;
+                }
+            }
+            if(same==1)
+            {
+                printf("该学号已存在，请重新输入：\n");
+                continue;
+            }
+            break;
+        }
+        printf("姓名:");
+        scanf("%s",stu[n].name);
+        printf("语文成绩:");
+        scanf("%d",&stu[n].China);
+        printf("数学成绩:");
+        scanf("%d",&stu[n].Math);
+        n++;
+
+        printf("\n\t\t按回车键继续，退出请输入N\n");
+        getchar();               //处理输入成绩后的回车
+        char c=getchar();       //获取用户输入
+        if(c=='N'||c=='n')
+            break;
+    }
+    printf("\n添加成功(￣▽￣)~*\n\n");
+}
+void show()
+{
+    int i;
+    printf("学号\t姓名\t语文成绩\t数学成绩\n");
+    for(i=0; i<n; i++)
+    {
+        printf("%s\t%s\t%d\t\t%d\n",stu[i].number,stu[i].name,stu[i].China,stu[i].Math);
+    }
+}
+int find_number(char number[10])
+{
+    int i;
+    for(i=0; i<n; i++)
+    {
+        if(strcmp(stu[i].number,number)==0)
+            return i;
+    }
+    return -1;
+}
+void recp()
+{
+    while(1)
+    {
+        printf("请输入学号:");
+        char number[10];
+        scanf("%s",number);
+        int pos=find_number(number);
+        if(pos>=0)                     //进行学生成绩的修改
+        {
+            printf("学号\t姓名\t语文成绩\t数学成绩\n");
+            printf("%s\t%s\t%d\t\t%d\n",stu[pos].number,stu[pos].name,stu[pos].China,stu[pos].Math);
+            printf("是否需要修改？（Y/N）");
+            getchar();
+            char c=getchar();
+            if(c=='Y'||c=='y')
+            {
+                printf("请输入需要修改的学生信息：\n");
+                printf("姓名:");
+                scanf("%s",stu[pos].name);
+                printf("语文成绩:");
+                scanf("%d",&stu[pos].China);
+                printf("数学成绩:");
+                scanf("%d",&stu[pos].Math);
+
+                printf("\n\t\t\t如需退出修改，请输入N\n");
+                getchar();                       //处理输入成绩后的回车
+                char c=getchar();                //获取用户输入
+                if(c=='N'||c=='n')
+                    break;
+                printf("\n修改成功(￣▽￣)~*\n\n");
+            }
+            if(c=='N'||c=='n')                  //是否需要修改（N）
+                break;
+        }
+        else
+        {
+            printf("该学生不存在\n");
+        }
+    }
+}
+void del()
+{
+    printf("请输入需要删除的学生学号:");
+    char number[10];
+    scanf("%s",number);
+    int pos=find_number(number);
+    if(pos>=0)
+    {
+        printf("学号\t姓名\t语文成绩\t数学成绩\n");
+        printf("%s\t%s\t%d\t\t%d\n",stu[pos].number,stu[pos].name,stu[pos].China,stu[pos].Math);
+        printf("是否需要删除？（Y/N）");
+        getchar();
+        char c=getchar();
+        if(c=='Y'||c=='y')                 //执行删除操作
+        {
+            int i;
+            for(i=pos; i<n-1; i++)
+            {
+                stu[i]=stu[i+1];          //让后一条信息覆盖到前面
+            }
+            n--;
+            printf("\n删除成功(￣▽￣)~*\n\n");
+        }
+    }
+    else
+    {
+        printf("\n该学生不存在\n");
+    }
+}
+void find()
+{
+    while(1)
+    {
+        printf("请输入需要查找的学生学号:");
+        char number[10];
+        scanf("%s",number);
+        int pos=find_number(number);
+        if(pos>=0)
+        {
+            printf("学号\t姓名\t语文成绩\t数学成绩\n");
+            printf("%s\t%s\t%d\t\t%d\n",stu[pos].number,stu[pos].name,stu[pos].China,stu[pos].Math);
+
+            printf("\n\t\t按回车键继续，退出请输入N\n");
+            getchar();              //处理输入成绩后的回车
+            char c=getchar();       //获取用户输入
+            if(c=='N'||c=='n')
+                break;
+        }
+        else
+        {
+            printf("\n该学生不存在，请重新输入\n");
+        }
+    }
+}
+void sort()
+{
+    int i,j;
+    for(i=0; i<j; i++)
+    {
+        for(j=0; j<n-i-1; j++)
+        {
+            if((stu[j].China+stu[j].Math)<(stu[j+1].China+stu[j+1].Math))
+            {
+                Student all=stu[j];
+                stu[j]=stu[j+1];
+                stu[j+1]=all;
+            }
+        }
+    }
+    printf("\n排序完成(￣▽￣)~*\n\n");
+}
+void load()
+{
+    FILE*file=fopen("student.txt","r+");       //读取
+    fscanf(file,"%d\n",&n);
+    char name[10],number[10];
+    int China,Math;
+
+    for(int i=0; i<n; i++)
+    {
+        fscanf(file,"%s\t%s\t%d\t\t%d\n",number,name,&China,&Math);
+
+        strcpy(stu[i].number,number);
+        strcpy(stu[i].name,name);
+        stu[i].China=China;
+        stu[i].Math=Math;
+    }
+    fclose(file);
+    printf("\n读取成功(￣▽￣)~*\n\n");
+}
+void save()
+{
+    FILE *file=fopen("student.txt","w");         //打开文件，文件存储位置、文件名和文件类型
+    fprintf(file,"%d\n",n);
+    char name[10],number[10];
+    int China,Math;
+    for(int i=0; i<n; i++)
+    {
+        strcpy(number,stu[i].number);
+        strcpy(name,stu[i].name);
+        China=stu[i].China;
+        Math=stu[i].Math;
+        fprintf(file,"%s\t%s\t%d\t%d\n",number,name,China,Math);
+    }
+    fclose(file);
+    printf("\n保存成功！(￣▽￣)~*\n\n");
+}
+void login()
+{
+    char username[10]="啦啦啦";
+    char username_input[10];
+    char password[18]="205501020347";
+    char password_input[18];
+
+    printf("\t\t☆登录界面☆\n\n");
+    while(1)
+    {
+        printf("请输入用户名:");
+        scanf("%s",username_input);
+        getchar();
+        if(strcmp(username,username_input)==0)
+        {
+            break;
+        }
+        printf("用户名输入错误，请重试\n");
+    }
+
+    while(1)
+    {
+        printf("请输入密码:");
+        scanf("%s",password_input);
+        getchar();
+        if(strcmp(password,password_input)==0)
+        {
+            break;
+        }
+        printf("密码错误，请重试\n");
+    }
+}
+
+int main()
+{
+    login();
+    while(1)
+    {
+        system("cls");                           //清屏用词
+        menu();
+        printf("请输入选项(0~8)：");
+        int sel;                             //用户选项
+        scanf("%d",&sel);
+        switch(sel)
+        {
+        case 1:              //添加记录
+        {
+            add();
+            break;
+        }
+        case 2:             //显示记录
+        {
+            show();
+            break;
+        }
+        case 3:             //修改记录
+        {
+            recp();
+            break;
+        }
+        case 4:             //删除记录
+        {
+            del();
+            break;
+        }
+        case 5:             //查找记录
+        {
+            find();
+            break;
+        }
+        case 6:             //排序记录
+        {
+            sort();
+            break;
+        }
+        case 7:                //文件加载
+        {
+            load();
+            break;
+        }
+        case 8:                //文件保存
+        {
+            save();
+            break;
+        }
+        case 0:               //退出程序
+        {
+            printf("\n拜拜~(^o^)丿\n");
+            return 0;
+        }
+        default:
+        {
+            printf("您输入的数字不正确，请重新输入\n");
+            break;
+        }
+        }
+        printf("按回车键继续             ~ 三O:)");
+        getchar();                       //处理输入选项后的回车键
+        getchar();                       //处理任意键
+    }
+    return 0;
+}
