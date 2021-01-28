@@ -1,4 +1,3 @@
-# Prerequisites#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #define MAXN 100                 //预定义把代码里出现的MAXN用100代替
